@@ -1,0 +1,24 @@
+<% form_for [:admin, @categorization] do |f| -%>
+  <%= render :partial => "/shared/admin/error_messages", :locals => {
+    :object => @categorization,
+    :include_object_name => true
+  } %>
+  
+  <div class='field'>
+    <%= f.label :name -%>
+    <%= f.text_field :name, :class => 'larger widest' -%>
+  </div>
+  
+  <div class='field'>
+    <%= f.label :code -%>
+    <%= f.text_field :code -%>
+  </div>
+  
+  <%= render :partial => "/shared/admin/form_actions",
+              :locals => {
+                :f => f,
+                :continue_editing => false,
+                :delete_title => t('admin.categorizations.categorization.delete'),
+                :delete_confirmation => t('shared.admin.delete.message', :title => @categorization.name)
+              } %>
+<% end -%>

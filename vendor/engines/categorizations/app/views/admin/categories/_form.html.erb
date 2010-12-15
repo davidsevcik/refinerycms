@@ -1,0 +1,41 @@
+<% url_opts = action_name == 'edit' ? {:url => admin_categorization_category_path(@categorization, @category)} : {} %>
+<%= form_for [:admin, @categorization, @category], url_opts do |f| %>
+
+  <%= f.hidden_field :categorization_id %>
+
+  <%= render :partial => "/shared/admin/error_messages",
+             :locals => {
+               :object => @category,
+               :include_object_name => true
+             } %>
+
+  <div class="field">
+    <%= f.label :name, t('.name') %>
+    <%= f.text_field :name, :class => "larger widest" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :parent_id, t('.parent_category') %>
+    <%= f.select :parent_id, nested_set_options(Category, @category) {|i| "#{'-' * i.level} #{i.name}" }, :include_blank => true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :code, t('.code') %>
+    <%= f.text_field :code %>
+  </div>
+
+  <div class='field'>
+    <%= f.label :description, t('.description') %>
+    <%= f.text_area :description, :rows => 10, :class => 'wymeditor widest' %>
+  </div>
+
+
+  <%= render :partial => "/shared/admin/form_actions",
+             :locals => {
+               :f => f,
+               :continue_editing => true,
+               :delete_title => t('admin.categories.delete'),
+               :delete_confirmation => t('shared.admin.delete.message', :title => @category.name),
+               :delete_url => @category.new_record? ? nil : admin_categorization_category_url(@categorization, @category)
+             } %>
+<% end %>

@@ -1,0 +1,20 @@
+<li class='clearfix record' id="<%= dom_id(category) -%>">
+  <div class='clearfix'>
+    <span class='title'><%= category.name %></span>
+
+    <span class='actions'>
+      <%= link_to refinery_icon_tag('application_edit.png'), edit_admin_categorization_category_url(@categorization, category),
+                  :title => t('admin.categories.edit') %>
+      <%= link_to refinery_icon_tag('delete.png'), admin_categorization_category_url(@categorization, category),
+                  :class => "cancel confirm-delete",
+                  :title => t('admin.categories.delete'),
+                  :confirm => t('shared.admin.delete.message', :title => category.name),
+                  :method => :delete %>
+    </span>
+  </div>
+  <ul class='nested'>
+    <% if (children = category.children).any? -%>
+      <%= render :partial => 'category', :collection => children %>
+    <% end -%>
+  </ul>
+</li>

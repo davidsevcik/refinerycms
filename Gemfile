@@ -59,7 +59,7 @@ group :test do
   gem 'capybara',               :git => 'git://github.com/parndt/capybara.git'
   gem 'database_cleaner'
   gem 'cucumber-rails'
-  gem 'cucumber'
+  gem 'cucumber',               :git => 'git://github.com/aslakhellesoy/cucumber.git'
   gem 'spork' unless Bundler::WINDOWS
   gem 'launchy'
   gem 'gherkin'
@@ -82,3 +82,6 @@ end
 # REFINERY CMS DEVELOPMENT ====================================================
 
 # END REFINERY CMS DEVELOPMENT =================================================
+
+#gem 'refinerycms-blog', :path => 'vendor/refinerycms'
+gem 'refinerycms-categorizations', '1.0', :path => 'vendor/engines', :require => 'categorizations'

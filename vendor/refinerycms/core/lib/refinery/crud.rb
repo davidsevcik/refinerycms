@@ -39,10 +39,19 @@ module Refinery
 
       def crudify(model_name, options = {})
         options = ::Refinery::Crud.default_options(model_name).merge(options)
+        #@@crudify_options = options
+        class_variable_set(:@@crudify_options, options)
 
         singular_name = model_name.to_s
         class_name = singular_name.camelize
         plural_name = singular_name.pluralize
+        #redirect_to_url = options[:redirect_to_url].is_a?(Proc) ? '@@crudify_options[:redirect_to_url].call' : options[:redirect_to_url]
+        #conditions = options[:conditions].is_a?(Proc) ? '@@crudify_options[:conditions].call' : options[:conditions].inspect
+        #search_conditions = options[:search_conditions].is_a?(Proc) ? '@@crudify_options[:search_conditions].call' : options[:search_conditions].inspect
+        redirect_to_url = "lambda {|this| this.class.method_defined?(:crudify_redirect) ? crudify_redirect : #{options[:redirect_to_url].inspect} }.call(self)"
+        conditions = "lambda {|this| this.class.method_defined?(:crudify_conditions) ? crudify_conditions : #{options[:conditions].inspect} }.call(self)"
+        search_conditions = "lambda {|this| this.class.method_defined?(:crudify_search_conditions) ? crudify_search_conditions : #{options[:search_conditions].inspect} }.call(self)"
+
 
         module_eval %(
           prepend_before_filter :find_#{singular_name},
@@ -56,7 +65,7 @@ module Refinery
             # if the position field exists, set this object as last object, given the conditions of this class.
             if #{class_name}.column_names.include?("position")
               params[:#{singular_name}].merge!({
-                :position => ((#{class_name}.maximum(:position, :conditions => #{options[:conditions].inspect})||-1) + 1)
+                :position => ((#{class_name}.maximum(:position, :conditions => #{conditions})||-1) + 1)
               })
             end
 
@@ -68,7 +77,7 @@ module Refinery
 
               unless from_dialog?
                 unless params[:continue_editing] =~ /true|on|1/
-                  redirect_back_or_default(#{options[:redirect_to_url]})
+                  redirect_back_or_default(#{redirect_to_url})
                 else
                   unless request.xhr?
                     redirect_to :back
@@ -77,7 +86,7 @@ module Refinery
                   end
                 end
               else
-                render :text => "<script>parent.window.location = '\#{#{options[:redirect_to_url]}}';</script>"
+                render :text => "<script>parent.window.location = '\#{#{redirect_to_url}}';</script>"
               end
             else
               unless request.xhr?
@@ -105,7 +114,7 @@ module Refinery
 
               unless from_dialog?
                 unless params[:continue_editing] =~ /true|on|1/
-                  redirect_back_or_default(#{options[:redirect_to_url]})
+                  redirect_back_or_default(#{redirect_to_url})
                 else
                   unless request.xhr?
                     redirect_to :back
@@ -114,7 +123,7 @@ module Refinery
                   end
                 end
               else
-                render :text => "<script>parent.window.location = '\#{#{options[:redirect_to_url]}}';</script>"
+                render :text => "<script>parent.window.location = '\#{#{redirect_to_url}}';</script>"
               end
             else
               unless request.xhr?
@@ -136,7 +145,7 @@ module Refinery
                                :what => "'\#{@#{singular_name}.#{options[:title_attribute]}}'")
             end
 
-            redirect_to #{options[:redirect_to_url]}
+            redirect_to #{redirect_to_url}
           end
 
           # Finds one single result based on the id params.
@@ -148,7 +157,8 @@ module Refinery
           # Find the collection of @#{plural_name} based on the conditions specified into crudify
           # It will be ordered based on the conditions specified into crudify
           # And eager loading is applied as specified into crudify.
-          def find_all_#{plural_name}(conditions = #{options[:conditions].inspect})
+          def find_all_#{plural_name}(conditions = nil)
+            conditions ||= #{conditions}
             @#{plural_name} = #{class_name}.where(conditions).includes(
                                 #{options[:include].map(&:to_sym).inspect}
                               ).order("#{options[:order]}")
@@ -172,7 +182,7 @@ module Refinery
           # Returns a weighted set of results based on the query specified by the user.
           def search_all_#{plural_name}
             # First find normal results.
-            find_all_#{plural_name}(#{options[:search_conditions].inspect})
+            find_all_#{plural_name}(#{search_conditions})
 
             # Now get weighted results by running the query against the results already found.
             @#{plural_name} = @#{plural_name}.with_query(params[:search])
@@ -288,7 +298,7 @@ module Refinery
 
 
       end
-
+      
     end
 
   end

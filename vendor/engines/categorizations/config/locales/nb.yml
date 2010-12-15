@@ -1,0 +1,20 @@
+nb:
+  plugins:
+    categorizations:
+      title: Categorizations
+  admin:
+    categorizations:
+      index:
+        title: Categorizations
+        create_new: Lag en ny Categorization
+        reorder: Endre rekkefølgen på Categorizations
+        reorder_done: Ferdig å endre rekkefølgen Categorizations
+        sorry_no_results: Beklager! Vi fant ikke noen resultater.
+        no_items_yet: Det er ingen Categorizations enda. Klikk på "Lag en ny Categorization" for å legge til din første categorization.
+      categorization:
+        view_live_html: Vis hvordan denne categorization ser ut offentlig <br/><em>(åpner i et nytt vindu)</em>
+        edit: Rediger denne categorization
+        delete: Fjern denne categorization permanent
+  categorizations:
+    show:
+      other: Andre Categorizations

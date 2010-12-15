@@ -1,0 +1,12 @@
+[submodule "vendor/refinerycms/blog"]
+	path = vendor/refinerycms/blog
+	url = git@github.com:davidsevcik/refinerycms-blog.git
+[submodule "vendor/engines/blog"]
+	path = vendor/engines/blog
+	url = git@github.com:davidsevcik/refinerycms-blog.git
+[submodule "vendor/engines/refinerycms_blog"]
+	path = vendor/engines/refinerycms_blog
+	url = git@github.com:davidsevcik/refinerycms-blog.git
+[submodule "vendor/refinerycms/refinerycms-blog"]
+	path = vendor/refinerycms/refinerycms-blog
+	url = git@github.com:davidsevcik/refinerycms-blog.git
