@@ -14,10 +14,12 @@
     <%= f.text_field :name, :class => "larger widest" %>
   </div>
 
-  <div class="field">
-    <%= f.label :parent_id, t('.parent_category') %>
-    <%= f.select :parent_id, nested_set_options(Category, @category) {|i| "#{'-' * i.level} #{i.name}" }, :include_blank => true %>
-  </div>
+  <% unless @categorization.categories.empty? %>
+    <div class="field">
+      <%= f.label :parent_id, t('.parent_category') %>
+      <%= f.select :parent_id, nested_set_options(@categorization.categories.where(:parent_id => nil)) {|i| "#{'-' * i.level} #{i.name}" }, :include_blank => true %>
+    </div>
+  <% end %>
 
   <div class="field">
     <%= f.label :code, t('.code') %>

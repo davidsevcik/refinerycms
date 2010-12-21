@@ -18,6 +18,17 @@ class CreateCategorizations < ActiveRecord::Migration
       t.text :description
     end
 
+    create_table :record_categories do |t|
+      t.integer :record_id
+      t.string :record_type
+      t.integer :category_id
+    end
+
+    create_table :model_categorizations do |t|
+      t.string :model_name
+      t.integer :categorization_id
+    end
+
     #add_index :categorizations, :id
 
     load(Rails.root.join('db', 'seeds', 'categorizations.rb'))
